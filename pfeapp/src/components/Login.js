@@ -1,45 +1,64 @@
 import ReactDOM from 'react-dom'
 import { useState } from "react" ;
 import Axios from "axios";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Student from '../pages/student/Student' ;
+
 
 
 
 function Login() {
     const [account, setAccount] = useState('');
-    const [pass, setPass] = useState(0);
+    const [pass, setPass] = useState('');
     
-    const [connection, setConnection] = useState("false");
-    const [component, setComponent] = useState('');
-  
-    const getworker = () => {
-      Axios.post("http://localhost:3001/worker",{
+    const [usernameReg, setUsernameReg] = useState("");
+    const [passwordReg, setPasswordReg] = useState("");
+
+    const [loginStatus, setLoginStatus] = useState("");
+    
+    const register = () => {
+      Axios.post("http://localhost:3002/register", {
+        username: usernameReg,
+        password: passwordReg,
+      }).then((response) => {
+        console.log(response);
+      });
+    };
+
+
+    const login = () => {
+      Axios.post("http://localhost:3002/login",{
         account: account,
         pass: pass,
       }).then((response) => {
-        
-        console.log(response.data.length);
-        
-        console.log(account + "App");
-        if (response.data.length ===0) {
-          console.log("no connection");
+        if (response.data.message) {
+          setLoginStatus(response.data.message);
+          console.log("login if");
+        } else {
+          setLoginStatus(response.data[0].account);
+          console.log(loginStatus);
         }
-        else {
-          setConnection("true");
-          //setComponent(<Employee />);
-          console.log("connected");
-          console.log("import page from database");
-          /*ReactDOM.render(
-            <Student />,
-            document.getElementById('root')
-          );*/
-        }
-      })
+      });
     };
   
     return (
       <div className="App">
+        <div className="registration">
+          <h1>Registration</h1>
+          <label>Username</label>
+          <input
+            type="text"
+            onChange={(e) => {
+              setUsernameReg(e.target.value);
+            }}
+          />
+          <label>Password</label>
+          <input
+            type="text"
+            onChange={(e) => {
+              setPasswordReg(e.target.value);
+            }}
+          />
+          <button onClick={register}> Register </button>
+        </div>
         <div className="admin">
           <label>Administrator Account :</label>
           <input 
@@ -57,8 +76,8 @@ function Login() {
             console.log(pass);
           }}
           />
-          <button onClick={getworker}>Log in</button>
-          <div>{component}</div>
+          <button onClick={login}>Log in</button>
+          <div>{loginStatus}</div>
           
         </div>
       </div>

@@ -3,51 +3,75 @@ const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  user: "root",
-  host: "localhost",
-  password: "rihabtkd",
-  database: "webapp",
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
+
+const db = mysql.createConnection({
+  host: process.env.HOST ,
+    user: process.env.USER ,
+    password: process.env.PASSWORD ,
+    database: process.env.DATABASE ,
 });
-app.post("/worker", (req, res) => {
+
+app.post("/register", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.log(err);
+    }
+
+    db.query(
+      "INSERT INTO employee (account, password) VALUES (?,?)",
+      [username, hash],
+      (err, result) => {
+        console.log(err);
+      }
+    );
+  });
+});
+app.post("/login", (req, res) => {
     
     const account = req.body.account;
-    const pass = req.body.pass;
+    const password = req.body.pass;
     console.log(account +"app");
-    console.log(pass);
+    console.log(password);
   
     db.query(
         
-      "select * from employee where account=? AND pass=? ;  ",
-      [account, pass]
-      /*"select * from employee"*/,
+      "select * from employee where account=? ;  ",
+      account, 
       (err, result) => {
         if (err) {
           console.log(err);
+          res.sendStatus({err: err});
+        } 
+        if (result.length > 0) {
+          bcrypt.compare(password, result[0].password, (error, response) => {
+            if (response) {
+              console.log("logedin");
+              res.send(result);
+            } else {
+              res.send({ message: "Wrong username/password combination!" });
+            }
+          });
         } else {
-            console.log("resultfound");
-          res.send(result);
+          res.send({ message: "User doesn't exist" });
         }
       }
     );
   });
-  app.get("/reservations", (req, res) => {
-    console.log("get inter");
-    db.query("SELECT * FROM reservations", (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("db connected");
-        res.send(result);
-      }
-    });
-  });
 
 
-  app.listen(3001, () => {
-    console.log("Yey, your server is running on port 3001");
+
+  app.listen(3002, () => {
+    console.log("Yey, your server is running on port 3002");
   });
