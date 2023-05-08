@@ -6,18 +6,21 @@ import Axios from "axios";
 
 
 function Login() {
-    const [account, setAccount] = useState('');
+    const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     
-    const [usernameReg, setUsernameReg] = useState("");
+    const [useremailReg, setUseremailReg] = useState("");
     const [passwordReg, setPasswordReg] = useState("");
+    const [usertypeReg, setUsertypeReg] = useState("");
+
 
     const [loginStatus, setLoginStatus] = useState("");
     
     const register = () => {
       Axios.post("http://localhost:3002/register", {
-        username: usernameReg,
+        useremail: useremailReg,
         password: passwordReg,
+        type: usertypeReg,
       }).then((response) => {
         console.log(response);
       });
@@ -26,28 +29,29 @@ function Login() {
 
     const login = () => {
       Axios.post("http://localhost:3002/login",{
-        account: account,
+        email: email,
         pass: pass,
       }).then((response) => {
         if (response.data.message) {
           setLoginStatus(response.data.message);
           console.log("login if");
         } else {
-          setLoginStatus(response.data[0].account);
+          setLoginStatus(response.data[0].email);
           console.log(loginStatus);
         }
       });
     };
+    
   
     return (
       <div className="App">
         <div className="registration">
           <h1>Registration</h1>
-          <label>Username</label>
+          <label>email</label>
           <input
             type="text"
             onChange={(e) => {
-              setUsernameReg(e.target.value);
+              setUseremailReg(e.target.value);
             }}
           />
           <label>Password</label>
@@ -57,6 +61,15 @@ function Login() {
               setPasswordReg(e.target.value);
             }}
           />
+          <label>type</label>
+          <select value={usertypeReg} onChange={(e) => {
+              setUsertypeReg(e.target.value);
+            }}>
+            <option value="etudiant">etudiant</option>
+            <option value="admin">admin</option>
+            <option value="coordinateur">coordinateur</option>
+            <option value="responsable">responsable</option>
+          </select>
           <button onClick={register}> Register </button>
         </div>
         <div className="admin">
@@ -64,8 +77,8 @@ function Login() {
           <input 
           type="text" 
           onChange={(event) => {
-            setAccount(event.target.value);
-            console.log(account);
+            setEmail(event.target.value);
+            console.log(email);
             console.log("in input");
           }}/>
           <label>PassWord :</label>

@@ -21,34 +21,53 @@ const db = mysql.createConnection({
 });
 
 app.post("/register", (req, res) => {
-  const username = req.body.username;
+  const email = req.body.useremail;
   const password = req.body.password;
+  const type = req.body.type;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.log(err);
     }
 
+    
+    
     db.query(
-      "INSERT INTO employee (account, password) VALUES (?,?)",
-      [username, hash],
+        
+      "select * from "+ type+" where email=? ;  ",
+       email,
       (err, result) => {
-        console.log(err);
+        if (err) {
+          console.log(err);
+          console.log("err1");
+          res.send({ message: "email was not found" });
+        } 
+        else if (result.length > 0) {
+          db.query(
+            "INSERT INTO account (email, password, type) VALUES (?,?,?)",
+            [email, hash,type],
+            (err, result) => {
+              console.log(err);
+            }
+          );
+        } else {
+              res.send({ message: "email was not found" });
+        }
       }
     );
   });
 });
 app.post("/login", (req, res) => {
     
-    const account = req.body.account;
+    const email = req.body.email;
     const password = req.body.pass;
-    console.log(account +"app");
+    console.log(email +"app");
     console.log(password);
   
     db.query(
         
-      "select * from employee where account=? ;  ",
-      account, 
+      "select * from account where email=? ;  ",
+      email, 
       (err, result) => {
         if (err) {
           console.log(err);
@@ -58,7 +77,21 @@ app.post("/login", (req, res) => {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
               console.log("logedin");
-              res.send(result);
+               /*res.send(result);*/
+               db.query(
+        
+                "select * from " +result[0].type+" where email=? ",
+                email,
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    console.log('err 2');
+                  } else {
+                    res.send(result);
+                    console.log('result 2');
+                  }
+                }
+              );
             } else {
               res.send({ message: "Wrong username/password combination!" });
             }
