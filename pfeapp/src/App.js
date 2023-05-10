@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Axios from "axios";
-import Login from './components/Login.js';
-import Header from './components/Header.js';
-import Home from './components/Home.js';
-import Footer from './components/Footer.js';
 
+import WelcomePage from './pages/WelcomePage/WelcomePage.js';
+import Footer from './components/Footer.js';
+import Admin from './pages/Admin/Admin.js';
+import Student from './pages/student/Student.js';
 
 
 import './App.css'; 
@@ -15,11 +14,10 @@ function App() {
     <div id="root">
            
           <Router>
-          <Header />
-          <Login />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Login" element={<Login />} />
+            <Route path="/" element={<WelcomePage />} />
+            
+            <Route path="/Admin" element={<Admin />} />
           </Routes>
           <Footer />
         </Router>

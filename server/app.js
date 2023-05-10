@@ -6,12 +6,38 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 dotenv.config();
 
-app.use(cors());
-app.use(express.json());
-
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+
+let solution ;
+app.use(express.json());
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  }
+));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  session({
+  key: "userId",
+  secret:"pfe",
+  resave: false ,
+  saveUninitialized : false,
+  cookie: {
+    expires: 60*60*24,
+  },
+})
+);
 
 const db = mysql.createConnection({
   host: process.env.HOST ,
@@ -29,9 +55,6 @@ app.post("/register", (req, res) => {
     if (err) {
       console.log(err);
     }
-
-    
-    
     db.query(
         
       "select * from "+ type+" where email=? ;  ",
@@ -57,6 +80,20 @@ app.post("/register", (req, res) => {
     );
   });
 });
+
+
+
+
+app.get("/login", (req, res) =>{
+  req.session.user = solution;
+  if (req.session.user) {
+    console.log('work');
+    res.send({ loggedIn: true, user: solution });
+  } else {
+    console.log('work2');
+    res.send({ loggedIn: false });
+  }
+});
 app.post("/login", (req, res) => {
     
     const email = req.body.email;
@@ -77,7 +114,13 @@ app.post("/login", (req, res) => {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
               console.log("logedin");
-               /*res.send(result);*/
+              /*res.writeHead(301, {
+                Location: `https://www.youtube.com/watch?v=WDT2TTeav2k/`
+              }).end();
+              res.redirect("/login");
+              res.send(result);*/
+               
+               res.send(result);
                db.query(
         
                 "select * from " +result[0].type+" where email=? ",
@@ -87,11 +130,14 @@ app.post("/login", (req, res) => {
                     console.log(err);
                     console.log('err 2');
                   } else {
-                    res.send(result);
+                    console.log(result[0]);
+                    req.session.user = result;
+                    solution =req.session.user;
+                    console.log(req.session.user);
                     console.log('result 2');
                   }
                 }
-              );
+              ); 
             } else {
               res.send({ message: "Wrong username/password combination!" });
             }
