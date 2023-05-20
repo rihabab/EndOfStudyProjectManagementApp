@@ -11,13 +11,9 @@ function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     
-    const [useremailReg, setUseremailReg] = useState("");
-    const [passwordReg, setPasswordReg] = useState("");
-    const [usertypeReg, setUsertypeReg] = useState("");
+    
 
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    const [propsuser, setPropsuser] = useState([]);
+    
 
     const [loginStatus, setLoginStatus] = useState("");
 
@@ -27,15 +23,7 @@ function Login() {
 
 Axios.defaults.withCredentials= true;
 
-    const register = () => {
-      Axios.post("http://localhost:3002/register", {
-        useremail: useremailReg,
-        password: passwordReg,
-        type: usertypeReg,
-      }).then((response) => {
-        console.log(response);
-      });
-    };
+    
 
 
     const login = () => {
@@ -43,20 +31,20 @@ Axios.defaults.withCredentials= true;
         email: email,
         pass: pass,
       }).then((response) => {
-        if (response.data.message) {
-          setLoginStatus(response.data.message);
-          console.log("login if");
+        if (!response.data.auth) {
+          setLoginStatus(false);
+          
         } else {
-          console.log(response.data[0].type);
+          /*console.log(response.data[0].type);
           setPropsuser(response.data[0].type);
           setLoggedIn(true);
-          /*
-          if(propsuser==="etudiant"){
-            navigate('/student')
-          }
           */
+         setLoginStatus(true);
+         
+         localStorage.setItem("token" , response.data.token)      
           
-          switch (propsuser){
+          
+          switch (response.data.result.type){
             case "admin":
               navigate('/admin');
               break;
@@ -69,52 +57,74 @@ Axios.defaults.withCredentials= true;
             case "responsable" :
               navigate('/responsable');
               break;
-
-            
           }
+          
           
           
         }
       });
     };
+    /*
     useEffect(()=>{
       Axios.get("http://localhost:3002/login").then((response) => {
         console.log(response);
         console.log('got it');
       })
     },[])
-
+    */
+   
+    useEffect(()=>{
+      Axios.get("http://localhost:3002/isUserAuth" , {
+        headers : {
+          "x-access-token":localStorage.getItem("token")
+        }}).then((response)=>{
+          if(response.data.auth){
+            console.log(response.data.type);
+            switch (response.data.type){
+              case "admin":
+                navigate('/admin');
+                break;
+              case "etudiant" :
+                navigate('/student');
+                break;
+              case "coordinateur":
+                navigate('/coordinator');
+                break;
+              case "responsable" :
+                navigate('/responsable');
+                break;
+            }
+          }else{
+            console.log('err');
+          }
+        })
+    },[])
     
     /*
-    <div className="registration">
-          <h1>Registration</h1>
-          <label>email</label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setUseremailReg(e.target.value);
-            }}
-          />
-          <label>Password</label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setPasswordReg(e.target.value);
-            }}
-          />
-          <label>type</label>
-          <select value={usertypeReg} onChange={(e) => {
-              setUsertypeReg(e.target.value);
-            }}>
-            <option value="etudiant">etudiant</option>
-            <option value="admin">admin</option>
-            <option value="coordinateur">coordinateur</option>
-            <option value="responsable">responsable</option>
-          </select>
-          <button onClick={register}> Register </button>
-        </div>
-      */
+    const userauth = () =>{
+      Axios.get("http://localhost:3002/isUserAuth" , {
+        headers : {
+          "x-access-token":localStorage.getItem("token")
+        }}).then((response)=>{
+          if(response){
+            console.log(response.data.result);
+            console.log(response.data.type);
+            console.log('hello');
+            
+            navigate('/student')
+            
+          }else{
+            console.log('err');
+          }
+        })
+    };
+    */
     
+    /*
+    <div>
+          {loginStatus && <button onClick={userauth}> check if authentificated</button>}
+        </div>
+    */
 
     return (
       <div>
@@ -152,6 +162,7 @@ Axios.defaults.withCredentials= true;
               
           </div>
         </div> 
+        
         
       </div>
 
