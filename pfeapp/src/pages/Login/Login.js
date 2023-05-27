@@ -11,6 +11,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     
+<<<<<<< HEAD
     const [useremailReg, setUseremailReg] = useState("");
     const [passwordReg, setPasswordReg] = useState("");
     const [usertypeReg, setUsertypeReg] = useState("");
@@ -18,6 +19,11 @@ function Login() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [propsuser, setPropsuser] = useState([]);
+=======
+    
+
+    
+>>>>>>> main
 
     const [loginStatus, setLoginStatus] = useState("");
 
@@ -27,6 +33,7 @@ function Login() {
 
 Axios.defaults.withCredentials= true;
 
+<<<<<<< HEAD
     const register = () => {
       Axios.post("http://localhost:3002/register", {
         useremail: useremailReg,
@@ -36,6 +43,9 @@ Axios.defaults.withCredentials= true;
         console.log(response);
       });
     };
+=======
+    
+>>>>>>> main
 
 
     const login = () => {
@@ -43,6 +53,7 @@ Axios.defaults.withCredentials= true;
         email: email,
         pass: pass,
       }).then((response) => {
+<<<<<<< HEAD
         if (response.data.message) {
           setLoginStatus(response.data.message);
           console.log("login if");
@@ -57,6 +68,22 @@ Axios.defaults.withCredentials= true;
           */
           
           switch (propsuser){
+=======
+        if (!response.data.auth) {
+          setLoginStatus(false);
+          
+        } else {
+          /*console.log(response.data[0].type);
+          setPropsuser(response.data[0].type);
+          setLoggedIn(true);
+          */
+         setLoginStatus(true);
+         
+         localStorage.setItem("token" , response.data.token)      
+          
+          
+          switch (response.data.result.type){
+>>>>>>> main
             case "admin":
               navigate('/admin');
               break;
@@ -69,6 +96,7 @@ Axios.defaults.withCredentials= true;
             case "responsable" :
               navigate('/responsable');
               break;
+<<<<<<< HEAD
 
             
           }
@@ -77,12 +105,23 @@ Axios.defaults.withCredentials= true;
         }
       });
     };
+=======
+          }
+          
+          
+          
+        }
+      });
+    };
+    /*
+>>>>>>> main
     useEffect(()=>{
       Axios.get("http://localhost:3002/login").then((response) => {
         console.log(response);
         console.log('got it');
       })
     },[])
+<<<<<<< HEAD
 
     
     /*
@@ -115,6 +154,62 @@ Axios.defaults.withCredentials= true;
         </div>
       */
     
+=======
+    */
+   
+    useEffect(()=>{
+      Axios.get("http://localhost:3002/isUserAuth" , {
+        headers : {
+          "x-access-token":localStorage.getItem("token")
+        }}).then((response)=>{
+          if(response.data.auth){
+            console.log(response.data.type);
+            switch (response.data.type){
+              case "admin":
+                navigate('/admin');
+                break;
+              case "etudiant" :
+                navigate('/student');
+                break;
+              case "coordinateur":
+                navigate('/coordinator');
+                break;
+              case "responsable" :
+                navigate('/responsable');
+                break;
+            }
+          }else{
+            console.log('err');
+          }
+        })
+    },[])
+    
+    /*
+    const userauth = () =>{
+      Axios.get("http://localhost:3002/isUserAuth" , {
+        headers : {
+          "x-access-token":localStorage.getItem("token")
+        }}).then((response)=>{
+          if(response){
+            console.log(response.data.result);
+            console.log(response.data.type);
+            console.log('hello');
+            
+            navigate('/student')
+            
+          }else{
+            console.log('err');
+          }
+        })
+    };
+    */
+    
+    /*
+    <div>
+          {loginStatus && <button onClick={userauth}> check if authentificated</button>}
+        </div>
+    */
+>>>>>>> main
 
     return (
       <div>
@@ -153,6 +248,10 @@ Axios.defaults.withCredentials= true;
           </div>
         </div> 
         
+<<<<<<< HEAD
+=======
+        
+>>>>>>> main
       </div>
 
       </div>

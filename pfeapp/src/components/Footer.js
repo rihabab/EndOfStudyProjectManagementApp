@@ -18,7 +18,11 @@ function Footer(){
                 <p className="mb-1">"Nous accompagnons vos premiers pas vers l’entreprise"
                     L'équipe de la direction adjointe des stages et relations entreprises vous accompagne dans vos premiers pas vers l'entreprise. Votre carrière se construit dès aujourd'hui, nous sommes là pour vous aider à mettre en valeur vos atouts pour bien la démarrer.
                 </p>
+<<<<<<< HEAD
                 <div class="copyright">
+=======
+                <div className="copyright">
+>>>>>>> main
                             Created By <span>
                                 <ul>
                                     <li>BOUTOU CHAIMA </li>

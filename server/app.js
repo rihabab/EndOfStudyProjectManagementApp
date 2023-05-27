@@ -14,6 +14,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
+const jwt = require('jsonwebtoken');
+
 let solution ;
 app.use(express.json());
 
@@ -70,8 +72,13 @@ app.post("/register", (req, res) => {
             "INSERT INTO account (email, password, type) VALUES (?,?,?)",
             [email, hash,type],
             (err, result) => {
+<<<<<<< HEAD
               console.log(err);
               res.send({ message: "insert problem" });
+=======
+              console.log('inserted');
+              res.send({ message: "insert done" , register:true});
+>>>>>>> main
             }
           );
         } else {
@@ -84,17 +91,67 @@ app.post("/register", (req, res) => {
 
 
 
-
+/*
 app.get("/login", (req, res) =>{
   req.session.user = solution;
   if (req.session.user) {
     console.log('work');
-    res.send({ loggedIn: true, user: solution });
+    res.send({ loggedIn: true, user: req.session.user });
   } else {
     console.log('work2');
     res.send({ loggedIn: false });
   }
 });
+*/
+const verifyJWT = (req,res,next)=> {
+  const token = req.headers["x-access-token"]
+
+  if (!token) {
+    res.send("need a token ")
+  }else{
+    jwt.verify(token,"jwtSecret" , (err, decoded) =>{
+      if(err) {
+        res.json({auth: false, message: "failed auth"});
+      }else{
+        req.userId = decoded.id;
+        next();
+        console.log('verified');
+      }
+    })
+  }
+}
+app.get('/isUserAuth' ,verifyJWT ,(req,res)=> {
+  db.query(
+                
+    "select * from account where id=? ",
+    req.userId,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.json({auth:false});
+      } else {
+        console.log('pass get auth');
+        console.log(result);
+        const type=result[0].type;
+        db.query(
+                
+          "select * from " +type+" where email=? ",
+          result[0].email,
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              console.log('err 2');
+            } else {
+              console.log(result[0]);
+              res.json({auth:true, result: result[0] , type: type })
+            }
+          }
+        ); 
+      }
+    }
+  );
+  
+})
 app.post("/login", (req, res) => {
     
     const email = req.body.email;
@@ -114,16 +171,19 @@ app.post("/login", (req, res) => {
         if (result.length > 0) {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
+              req.session.user = result;
               console.log("logedin");
-              /*res.writeHead(301, {
-                Location: `https://www.youtube.com/watch?v=WDT2TTeav2k/`
-              }).end();
-              res.redirect("/login");
-              res.send(result);*/
+              
+               const id = result[0].id
+               const token = jwt.sign({id}, "jwtSecret", {
+                expiresIn:6000,
+               });
+               res.json({auth:true, token: token, result: result[0]});
                
-               res.send(result);
+               /*res.send(result);*/
+               /*
                db.query(
-        
+                
                 "select * from " +result[0].type+" where email=? ",
                 email,
                 (err, result) => {
@@ -138,13 +198,13 @@ app.post("/login", (req, res) => {
                     console.log('result 2');
                   }
                 }
-              ); 
+              ); */
             } else {
-              res.send({ message: "Wrong username/password combination!" });
+              res.json({auth:false, message: "Wrong username/password combination!"});
             }
           });
         } else {
-          res.send({ message: "User doesn't exist" });
+          res.json({auth:false, message: 'no user exists'});
         }
       }
     );

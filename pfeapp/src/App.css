@@ -27,9 +27,17 @@
   width: 300px;
   color:white;
   gap: 30px;
+<<<<<<< HEAD
   
 }
 input{
+=======
+  padding: 5px;
+  
+}
+input{
+  padding: 5px;
+>>>>>>> main
   border-radius: 5px;
   height: 40px;
   border-color: white;
