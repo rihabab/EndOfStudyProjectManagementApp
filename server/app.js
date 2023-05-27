@@ -72,13 +72,8 @@ app.post("/register", (req, res) => {
             "INSERT INTO account (email, password, type) VALUES (?,?,?)",
             [email, hash,type],
             (err, result) => {
-<<<<<<< HEAD
-              console.log(err);
-              res.send({ message: "insert problem" });
-=======
               console.log('inserted');
               res.send({ message: "insert done" , register:true});
->>>>>>> main
             }
           );
         } else {
@@ -120,6 +115,26 @@ const verifyJWT = (req,res,next)=> {
     })
   }
 }
+app.post('/convention' , (req, res) =>{
+  const entreprise=req.body.entreprise;
+  const entreprisead=req.body.entreprisead;
+  const entreprisrepresenter=req.body.entreprisrepresenter;
+  const entreprisRepresenterJob=req.body.entreprisRepresenterJob;
+
+  db.query(
+        
+    "insert into entreprise values (?,?,?,?) ;  ",
+    [entreprise,entreprisead,entreprisrepresenter,entreprisRepresenterJob], 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else {
+        console.log('good insert done');
+      }
+    }
+  );
+})
 app.get('/isUserAuth' ,verifyJWT ,(req,res)=> {
   db.query(
                 

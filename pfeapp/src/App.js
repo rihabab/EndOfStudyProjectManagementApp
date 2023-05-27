@@ -11,6 +11,7 @@ import Coordinator from './pages/Coordinator/Coordinator.js';
 import Responsable from './pages/Responsable/Responsable.js';
 import Login from './pages/Login/Login.js';
 import Register from './pages/Login/Register.js';
+import Convention from './pages/student/Convention.js';
 
 import './App.css'; 
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/student" element={<Student />} />
             <Route path="/coordinator" element={<Coordinator />} />
             <Route path="/responsable" element={<Responsable />} />
+            <Route path="/convention" element={<Convention />} />
           </Routes>
           <Footer />
         </Router>

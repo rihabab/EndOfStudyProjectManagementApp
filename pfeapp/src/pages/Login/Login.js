@@ -11,19 +11,9 @@ function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     
-<<<<<<< HEAD
-    const [useremailReg, setUseremailReg] = useState("");
-    const [passwordReg, setPasswordReg] = useState("");
-    const [usertypeReg, setUsertypeReg] = useState("");
-
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    const [propsuser, setPropsuser] = useState([]);
-=======
     
 
     
->>>>>>> main
 
     const [loginStatus, setLoginStatus] = useState("");
 
@@ -33,19 +23,7 @@ function Login() {
 
 Axios.defaults.withCredentials= true;
 
-<<<<<<< HEAD
-    const register = () => {
-      Axios.post("http://localhost:3002/register", {
-        useremail: useremailReg,
-        password: passwordReg,
-        type: usertypeReg,
-      }).then((response) => {
-        console.log(response);
-      });
-    };
-=======
     
->>>>>>> main
 
 
     const login = () => {
@@ -53,22 +31,6 @@ Axios.defaults.withCredentials= true;
         email: email,
         pass: pass,
       }).then((response) => {
-<<<<<<< HEAD
-        if (response.data.message) {
-          setLoginStatus(response.data.message);
-          console.log("login if");
-        } else {
-          console.log(response.data[0].type);
-          setPropsuser(response.data[0].type);
-          setLoggedIn(true);
-          /*
-          if(propsuser==="etudiant"){
-            navigate('/student')
-          }
-          */
-          
-          switch (propsuser){
-=======
         if (!response.data.auth) {
           setLoginStatus(false);
           
@@ -83,7 +45,6 @@ Axios.defaults.withCredentials= true;
           
           
           switch (response.data.result.type){
->>>>>>> main
             case "admin":
               navigate('/admin');
               break;
@@ -96,16 +57,6 @@ Axios.defaults.withCredentials= true;
             case "responsable" :
               navigate('/responsable');
               break;
-<<<<<<< HEAD
-
-            
-          }
-          
-          
-        }
-      });
-    };
-=======
           }
           
           
@@ -114,47 +65,12 @@ Axios.defaults.withCredentials= true;
       });
     };
     /*
->>>>>>> main
     useEffect(()=>{
       Axios.get("http://localhost:3002/login").then((response) => {
         console.log(response);
         console.log('got it');
       })
     },[])
-<<<<<<< HEAD
-
-    
-    /*
-    <div className="registration">
-          <h1>Registration</h1>
-          <label>email</label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setUseremailReg(e.target.value);
-            }}
-          />
-          <label>Password</label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setPasswordReg(e.target.value);
-            }}
-          />
-          <label>type</label>
-          <select value={usertypeReg} onChange={(e) => {
-              setUsertypeReg(e.target.value);
-            }}>
-            <option value="etudiant">etudiant</option>
-            <option value="admin">admin</option>
-            <option value="coordinateur">coordinateur</option>
-            <option value="responsable">responsable</option>
-          </select>
-          <button onClick={register}> Register </button>
-        </div>
-      */
-    
-=======
     */
    
     useEffect(()=>{
@@ -209,7 +125,6 @@ Axios.defaults.withCredentials= true;
           {loginStatus && <button onClick={userauth}> check if authentificated</button>}
         </div>
     */
->>>>>>> main
 
     return (
       <div>
@@ -248,10 +163,7 @@ Axios.defaults.withCredentials= true;
           </div>
         </div> 
         
-<<<<<<< HEAD
-=======
         
->>>>>>> main
       </div>
 
       </div>

@@ -5,16 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 
 function Admin(props){
-<<<<<<< HEAD
-    
-    return (
-    <div>
-        hellooooooooooooo
-        {props.nom}
-        {props.prenom}
-    </div>
-    )
-=======
     const navigate = useNavigate();
     const [username , setUsername] = useState("");
     useEffect(()=>{
@@ -39,7 +29,6 @@ function Admin(props){
 
     return <div>
         {username}</div>
->>>>>>> main
 }
 
 export default Admin 
