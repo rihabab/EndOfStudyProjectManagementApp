@@ -71,6 +71,7 @@ app.post("/register", (req, res) => {
             [email, hash,type],
             (err, result) => {
               console.log(err);
+              res.send({ message: "insert problem" });
             }
           );
         } else {

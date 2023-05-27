@@ -1,9 +1,10 @@
-import Login from "./Login";
+import Login from "../Login/Login";
 import Home from "./Home";
+import Navbar from '../../components/Navbar';
 function WelcomePage() {
     return (
         <div>
-            <Login />
+            <Navbar />
             <Home />
 
         </div>
