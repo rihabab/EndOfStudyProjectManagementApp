@@ -83,7 +83,62 @@ app.post("/register", (req, res) => {
     );
   });
 });
-
+app.post('/convention' , (req, res) =>{
+  const username=req.body.username;
+  const userfil=req.body.userfil;
+  const entreprise= req.body.entreprise;
+  const entreprisead=req.body.entreprisead;
+  const entreprisrepresenter=req.body.entreprisrepresenter;
+  const entreprisRepresenterJob=req.body.entreprisRepresenterJob;
+  const pfedatedeb=req.body.pfedatedeb;
+  const pfedatedfin=req.body.pfedatedfin;
+  const encadrant= req.body.encadrant;
+  const encadrantjob= req.body.encadrantjob;
+  const encadranttel= req.body.encadranttel;
+  const encadrantemail= req.body.encadrantemail;
+  const coordinateur= req.body.coordinateur;
+  const sujet= req.body.sujet;
+  const descriptif= req.body.descriptif;
+  console.log('database');
+  db.query(
+        
+    "insert into pfe values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ; ",
+    [username,userfil,entreprise,entreprisead,entreprisrepresenter,entreprisRepresenterJob,pfedatedeb,pfedatedfin,encadrant,encadrantjob,encadranttel,encadrantemail,coordinateur,sujet,descriptif], 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else {
+        console.log('good insert done');
+      }
+    }
+  );
+  db.query(
+        
+    "select * from entreprise where nom_entreprise=? ; ",
+    entreprise, 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else if (result.length==0){
+        db.query(
+        
+          "insert into entreprise values(?,?,?,?); ",
+          [entreprise,entreprisead,entreprisrepresenter,entreprisRepresenterJob], 
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              res.sendStatus({err: err});
+            } else if (result.length>0){
+              console.log('good insert done entreprise');
+            }
+          }
+        );
+      } 
+    }
+  );
+})
 
 
 /*
@@ -115,26 +170,7 @@ const verifyJWT = (req,res,next)=> {
     })
   }
 }
-app.post('/convention' , (req, res) =>{
-  const entreprise=req.body.entreprise;
-  const entreprisead=req.body.entreprisead;
-  const entreprisrepresenter=req.body.entreprisrepresenter;
-  const entreprisRepresenterJob=req.body.entreprisRepresenterJob;
 
-  db.query(
-        
-    "insert into entreprise values (?,?,?,?) ;  ",
-    [entreprise,entreprisead,entreprisrepresenter,entreprisRepresenterJob], 
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.sendStatus({err: err});
-      } else {
-        console.log('good insert done');
-      }
-    }
-  );
-})
 app.get('/isUserAuth' ,verifyJWT ,(req,res)=> {
   db.query(
                 

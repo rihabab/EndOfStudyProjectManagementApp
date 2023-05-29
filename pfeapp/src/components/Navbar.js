@@ -60,13 +60,13 @@ function Navbar(props){
                 
               </div>
               <div>{props.convention}</div>
-              <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle p-lg-3" href="#" role="button" data-bs-toggle="dropdown"
+              <div className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle p-lg-3" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         {props.nom}
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+                    <ul className="dropdown-menu">
+                        <li><a className="dropdown-item" href="#">Déconnexion</a></li>
 
                     </ul>
               </div>
