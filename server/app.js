@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
+const pdf = require('html-pdf');
+
+const pdfTemplate = require('./documents');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -16,7 +19,7 @@ const session = require("express-session");
 
 const jwt = require('jsonwebtoken');
 
-let solution ;
+
 app.use(express.json());
 
 app.use(
@@ -40,6 +43,21 @@ app.use(
   },
 })
 );
+
+app.post('/create-pdf', (req, res) => {
+  pdf.create(pdfTemplate(req.body), {}).toFile('result.pdf', (err) => {
+      if(err) {
+          res.send(Promise.reject());
+      }
+
+      res.send(Promise.resolve());
+  });
+});
+
+app.get('/fetch-pdf', (req, res) => {
+  res.sendFile(`${__dirname}/result.pdf`)
+})
+
 
 const db = mysql.createConnection({
   host: process.env.HOST ,
@@ -83,6 +101,23 @@ app.post("/register", (req, res) => {
     );
   });
 });
+
+app.post('/coordinateur', (req, res) => {
+  const userfil=req.body.userfil;
+  db.query(
+    "select * from pfe where filiere=? ; ",
+    userfil, 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else if (result.length>0){
+        res.send(result);
+      } 
+    }
+  )
+  
+})
 app.post('/convention' , (req, res) =>{
   const username=req.body.username;
   const userfil=req.body.userfil;
@@ -138,6 +173,24 @@ app.post('/convention' , (req, res) =>{
       } 
     }
   );
+})
+
+
+app.post('/get-convention', (req, res) => {
+  const username=req.body.username;
+  db.query(
+    "select * from pfe where nom_etudiant=? ; ",
+    username, 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else if (result.length>0){
+        res.json({result: result[0]});
+      } 
+    }
+  )
+  
 })
 
 
