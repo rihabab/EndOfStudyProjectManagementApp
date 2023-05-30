@@ -1,0 +1,40 @@
+
+*{
+  padding: 0;
+  margin: 0;
+}
+.Login,.register{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap:150px;
+}
+.logincontainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #19283f;
+  width:400px ;
+  height: 600px;
+  border-radius: 20px;
+}
+.loginform{
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  color:white;
+  gap: 30px;
+  padding: 5px;
+  
+}
+input{
+  padding: 5px;
+  border-radius: 5px;
+  height: 40px;
+  border-color: white;
+  border-width: 0;
+}
+
