@@ -91,7 +91,7 @@ app.post("/register", (req, res) => {
             [email, hash,type],
             (err, result) => {
               console.log('inserted');
-              res.send({ message: "insert done" , register:true});
+              res.send(result);
             }
           );
         } else {
@@ -101,7 +101,22 @@ app.post("/register", (req, res) => {
     );
   });
 });
-
+app.post('/responsable', (req, res) => {
+  const userfil=req.body.userfil;
+  db.query(
+    "select * from pfe where filiere=? ; ",
+    userfil, 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus({err: err});
+      } else if (result.length>0){
+        res.send(result);
+      } 
+    }
+  )
+  
+})
 app.post('/coordinateur', (req, res) => {
   const userfil=req.body.userfil;
   db.query(
@@ -256,6 +271,9 @@ app.get('/isUserAuth' ,verifyJWT ,(req,res)=> {
   );
   
 })
+
+
+
 app.post("/login", (req, res) => {
     
     const email = req.body.email;
@@ -278,12 +296,12 @@ app.post("/login", (req, res) => {
               req.session.user = result;
               console.log("logedin");
               
-               const id = result[0].id
-               const token = jwt.sign({id}, "jwtSecret", {
-                expiresIn:6000,
-               });
-               res.json({auth:true, token: token, result: result[0]});
-               
+              const id = result[0].id
+              const token = jwt.sign({id}, "jwtSecret", {
+              expiresIn:6000,
+              });
+              res.json({auth:true, token: token, result: result[0], message:"user created successfully!"});
+              
                /*res.send(result);*/
                /*
                db.query(

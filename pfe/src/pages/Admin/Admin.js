@@ -14,29 +14,13 @@ import './Admin.css';
 function Admin(props){
     const navigate = useNavigate();
     const [username , setUsername] = useState("");
-    useEffect(()=>{
-        Axios.get("http://localhost:3002/isUserAuth" , {
-          headers : {
-            "x-access-token":localStorage.getItem("token")
-          }}).then((response)=>{
-            if(response.data.auth){
-              console.log(response.data.result);
-              console.log(response.data.type);
-              console.log('hello');
-              setUsername(response.data.result.nom)
-              /*
-              navigate('/student')
-              */
-            }else{
-                navigate('/login')
-              
-            }
-          })
-      },[])
+    
+
+      
 
     return(
       <div className="admin">
-        <Navbar nom={username} />
+        <Navbar isUserLoggedIn={true} nom={username} />
         <div class="design pt-5 pb-0  d-flex align-items-center">
             <div class="image position-relative">
                 <img src={admin} alt="" width="500" />
@@ -58,7 +42,7 @@ function Admin(props){
             <div class="container">
                 <div class="box quality">
                     <div class="img-holder"><img src={im3} alt="" /></div>
-                    <h2>Ajouter un Offre</h2>
+                    <h2>Ajouter une Offre</h2>
                     <p>Cliquer sur "More " pour ajouter un offre de stage et remplir les informatios nécessaires</p>
                     <a href="#">More</a>
                 </div>

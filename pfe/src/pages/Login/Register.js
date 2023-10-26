@@ -6,25 +6,22 @@ import "bootstrap/dist/css/bootstrap.css";
 import desk1 from '../../assets/images/desk1.jpg';
 
 
-function Login() {
+function Register() {
     
     
     const [useremailReg, setUseremailReg] = useState("");
     const [passwordReg, setPasswordReg] = useState("");
     const [usertypeReg, setUsertypeReg] = useState("");
 
-    const [loggedIn, setLoggedIn] = useState(false);
-
     const [propsuser, setPropsuser] = useState([]);
-
-    const [loginStatus, setLoginStatus] = useState("");
-
-
+    const [passsecond, setPassSecond] = useState("");
+    const [message, setMessage] = useState("");
     const navigate = useNavigate();
     
-
-Axios.defaults.withCredentials= true;
-
+    Axios.defaults.withCredentials= true;
+    const login = () => {
+      navigate('/login')
+    }
     const register = () => {
       Axios.post("http://localhost:3002/register", {
         useremail: useremailReg,
@@ -34,77 +31,120 @@ Axios.defaults.withCredentials= true;
         console.log(usertypeReg);
         setPropsuser(response.data.message);
       });
+      navigate('/login');
     };
 
-/*
-    const login = () => {
-      Axios.post("http://localhost:3002/login",{
-        
-      }).then((response) => {
-        if (response.data.message) {
-          setLoginStatus(response.data.message);
-          console.log("login if");
-        } else {
-          console.log(response.data[0].type);
-          setPropsuser(response.data[0].type);
-          setLoggedIn(true);
-          
-          
-          if (propsuser) {
-            navigate('/admin');
-          }
-        }
-      });
-    };*/
-    useEffect(()=>{
-      Axios.get("http://localhost:3002/login").then((response) => {
-        console.log(response);
-        console.log('got it');
-      })
-    },[])
 
-    
-    /*
-    
-      */
+    // useEffect(()=>{
+    //   Axios.get("http://localhost:3002/login").then((response) => {
+    //     console.log(response);
+    //     console.log('got it');
+    //   })
+    // },[])
+
+    useEffect(()=>{
+      Axios.get("http://localhost:3002/isUserAuth" , {
+        headers : {
+          "x-access-token":localStorage.getItem("token")
+        }}).then((response)=>{
+          if(response.data.auth){
+            console.log(response.data.type);
+            switch (response.data.type){
+              case "admin":
+                navigate('/admin');
+                break;
+              case "etudiant" :
+                navigate('/student');
+                break;
+              case "coordinateur":
+                navigate('/coordinator');
+                break;
+              case "responsable" :
+                navigate('/responsable');
+                break;
+            }
+          }else{
+            console.log('err');
+          }
+        })
+    },[])
     
 
     return (
       <div>
         <Navbar />
+        
         <div className="register">
-        <div>{propsuser}</div>
+        
         <div className="logincontainer">
             <div className="loginform">
             <h1>Registration</h1>
-            <label>email</label>
-            <input
-                type="text"
-                onChange={(e) => {
-                setUseremailReg(e.target.value);
-                }}
-            />
-            <label>Password</label>
-            <input
-                type="text"
-                onChange={(e) => {
-                setPasswordReg(e.target.value);
-                }}
-            />
-            <label>type</label>
-            <select value={usertypeReg} onChange={(e) => {
-                setUsertypeReg(e.target.value);
-                }}>
-                <option value="etudiant">etudiant</option>
-                <option value="admin">admin</option>
-                <option value="coordinateur">coordinateur</option>
-                <option value="responsable">responsable</option>
-            </select>
+            {propsuser &&<div className="text-danger">{propsuser}</div>}
+            <div className="formatdiv">
+              <label>email</label>
+              <input
+                  type="email"
+                  onChange={(e) => {
+                  setUseremailReg(e.target.value);
+                  }}
+              />
+            </div>
+            <div className="formatdiv">
+              <label>Password</label>
+              <input
+                  type="password"
+                  onChange={(e) => {
+                  setPasswordReg(e.target.value);
+                  }}
+              />
+            </div>
+            <div className="formatdiv">
+              <label>Confirm Password</label>
+              <input
+                  type="password"
+                  onChange={(e) => {
+                  setPassSecond(e.target.value);
+                  const currentVal = e.target.value;
+                  if (passwordReg === currentVal) {
+                    setMessage('');
+                  } else {
+                    setMessage('Passwords Do Not Match');
+                  }
+                  
+                  }}
+              /><br/>
+              {message && <p className="text-danger ">{message}</p>}
+              
+            </div>
+            <div className="formatdiv">
+              <label>type</label>
+              <select className="custom-select" value={usertypeReg} onChange={(e) => {
+                  setUsertypeReg(e.target.value);
+                  }}>
+                  <option value="" disabled>Select a user type</option>
+                  <option value="etudiant">etudiant</option>
+                  <option value="admin">admin</option>
+                  <option value="coordinateur">coordinateur</option>
+                  <option value="responsable">responsable</option>
+              </select>
+            
+            </div>
+            
             <button className="btn btn-primary rounded-pill main-btn" onClick={register}> Register </button>
+            <div className="mt-8">
+                            <p>
+                                Already have an account?
+                                <a onClick={login} className="text-laravel"
+                                    >Login</a
+                                >
+                            </p>
+                        </div>
             </div>
 
         </div>
         </div>
+
+        
         
         </div>
     );
@@ -112,4 +152,4 @@ Axios.defaults.withCredentials= true;
 
 }
 
-export default Login 
+export default Register 

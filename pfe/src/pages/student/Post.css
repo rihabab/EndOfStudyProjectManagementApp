@@ -1,0 +1,35 @@
+
+
+.h7 {
+    font-size: 0.8rem;
+}
+
+.gedf-wrapper {
+    margin-top: 0.97rem;
+}
+
+
+.post-image {
+    max-width: 100%;
+    margin: 0px 0;
+}
+
+
+@media (min-width: 992px) {
+    .gedf-main {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+    .gedf-card {
+        margin-bottom: 0.77rem;
+    }
+}
+
+/**Reset Bootstrap*/
+.dropdown-toggle::after {
+    content: none;
+    display: none;
+}
+.card-title{
+    font-size:2em;
+}

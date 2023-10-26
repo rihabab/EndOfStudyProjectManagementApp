@@ -166,10 +166,13 @@ function Convention(){
                 </div>
                 
                 <button type="submit">submit</button>
-                
+                <div className="case">
+                  <button onClick={createAndDownloadPdf}>Download PDF</button>
+                </div>
                 <div>{entreprise} {entreprisead} {entreprisrepresenter} {entreprisRepresenterJob} {pfedatedeb} {pfedatedfin}</div>
+                
               </form>
-              <button onClick={createAndDownloadPdf}>Download PDF</button>
+              
               
             </div>
             

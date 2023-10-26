@@ -1,107 +1,158 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import '../pages/WelcomePage/font_Page.css' ;
 import Logo_inpt from '../assets/images/Logo_inpt.PNG';
 import { useNavigate } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import ThemeContext from "../contexts/ThemeContext";
 import Axios from "axios";
-
-import { FaFacebook, FaTwitter, FaLinkedin, FaYoutube,FaSearch } from "react-icons/fa";
-
+import LogContext from "../contexts/LogContext";
 
 
-function Navbar(props){
+
+function Navbar(){
     const navigate = useNavigate();
-
-    const logout=()=>{
-      Axios.get("http://localhost:3002/isUserAuth" , {
-          headers : {
-            "x-access-token":localStorage.removeItem("token")
-          }}).then((response)=>{
-            if(response.data.auth){
-              console.log(response.data.result);
-              console.log(response.data.type);
-              console.log('hello');
-              
-              /*
-              navigate('/student')
-              */
-            }else{
-                navigate('/login')
-              
+    const { theme, setTheme } = useContext(ThemeContext);
+    const { loggedIn, setLoggedIn } = useContext(LogContext);
+    const [username, setUserName]=useState('');
+    const [isUserLoggedIn, setisLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+        Axios.get("http://localhost:3002/isUserAuth", {
+            headers: {
+                "x-access-token": localStorage.getItem("token")
             }
-          })
+        }).then((response) => {
+            if (response.data.auth) {
+                console.log(response.data.result);
+                const themeData = Object.entries(response.data.result);
+                setTheme(themeData);
+                setUserName(themeData[1][1]);
+                setisLoggedIn(true);
+
+            } else {
+                setTheme([]);
+                setUserName('');
+                setisLoggedIn(false);
+                navigate('/login');
+            }
+            setLoading(false); 
+        })
+    }, [loggedIn]);
+
+
+
+
+
+
+
+
+
+
+
+    const logout = () => {
+      setTheme([]);
+      setUserName('');
+      setisLoggedIn(false);
+    
+      Axios.get("http://localhost:3002/logout", { // Assuming the correct route is "/logout"
+          headers: {
+              "x-access-token": localStorage.removeItem("token")
+          }
+      }).then((response) => {
+          if (!response.data.auth) {
+              navigate('/login');
+          }
+          
+      });
+      navigate('/login');
     }
-    
-    
+
+
     const login =()=>{
         navigate('/login');
     }
+
+    if (loading) {
+      return <div>Loading...</div>;
+  }else{
     return(
-        <div>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top" style={{backgroundColor: "#ecf3f8"}}>
-            <div className="container">
-              <a className="navbar-brand" href="#">
-                <img
-                  src={Logo_inpt}
-                  alt=""
-                  width="140"
-                  height="40"
-                  className="d-inline-block align-text-center"
-                />
-                ENTREPRISES{" "}
-              </a>
+      
+      <div>
+          
+        <nav className="navbar navbar-expand-lg navbar-light bg-light px-5">
+          
+          
+          <a className="navbar-brand " href="#" >
+              <img
+                src={Logo_inpt}
+                alt=""
+                width="110"
+                height="40"
+                className="d-inline-block "
+              />
+              
+            </a>
+          
 
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#main"
-                aria-controls="main"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="navbar-toggler-icon"></span>
-              </button>
-              <div className="collapse navbar-collapse" id="main">
-                <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                  <li className="nav-item">
-                    <a className="nav-link p-lg-3 active" aria-current="page" href="#">
-                      Home
-                    </a>
-                  </li>
+          
+          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul className="navbar-nav">
+              <li className="nav-item ">
+                <a className="nav-link" href="#">Home</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#">Contact</a>
+              </li>
+              
+              
+              {(() => {
+              if (isUserLoggedIn) {
+                return (
+                  
+                  <div className="navbar-nav">
+                    
+                    
+                      <li className="nav-item d-flex align-items-center justify-content-center px-2">
+                        <a className="nav-link navbar-nav " href="#"><FaUser className=" mt-1" /><div className="d-flex align-items-center justify-content-center ">{username}</div></a>
+                      </li>
+                    
+                    
+                    <li className="nav-item">
+                      <button className=" btn btn-primary rounded-pill main-btn" onClick={logout}>
+                          Logout
+                      </button>
+                    </li>
 
-                  <li className="nav-item">
-                    <a className="nav-link p-lg-3" href="#">
-                      Contact
-                    </a>
-                  </li>
-                </ul>
-                <div className="search ps-3 pe-3">
-                    <FaSearch  />
-                </div>
-                
-              </div>
-              <div>{props.convention}</div>
-              <div className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle p-lg-3" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        {props.nom}
-                    </a>
-                    <ul className="dropdown-menu">
-                        <li><a className="dropdown-item" href="#">Déconnexion</a></li>
 
-                    </ul>
-              </div>
-              <button className="btn btn-primary rounded-pill main-btn" onClick={login}>
-                  Login
-                </button>
-                <button className="btn btn-primary rounded-pill main-btn" onClick={logout}>
-                  Logout
-                </button>
-            </div>
-          </nav>
+                      
+                  </div>
+                );
+              
+              } else {
+                return (
+                  <div className="navbar-nav">
+                    
+                    <li className="nav-item ">
+                      <button className="btn btn-primary rounded-pill main-btn" onClick={login}>
+                        Sign in
+                      </button>
+                    </li>
+                  </div>
+              ) ;
+              }
+            })()}
 
-        </div>
-    );
+            </ul>
+          </div>
+        </nav>
+      </div>
+    
+      
+  );
+  }
+  
+    
 }
 export default Navbar
